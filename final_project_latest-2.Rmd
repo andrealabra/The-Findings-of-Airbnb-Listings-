@@ -1,0 +1,476 @@
+---
+title: "final Project"
+author: "Prasannaw Maddipati"
+date: "2024-04-26"
+output: html_document
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+**Loading the dataset**
+
+```{r}
+df_airbnb <- read.csv("Airbnb_Data.csv")
+head(df_airbnb)
+```
+
+```{r}
+str(df_airbnb)
+```
+
+```{r}
+library(tidyverse)
+
+city <- ggplot(df_airbnb, aes(x = city, fill = city)) +
+  geom_bar() +
+  labs(x = "City", y = "Frequency", title = "Distribution of Airbnb Listings by City") +
+  scale_fill_brewer(palette = "Set3")
+
+
+city + geom_text(stat = "count", aes(label = ifelse(..count.. != 0, ..count.., "")), vjust = -0.5)
+```
+
+**Filtering out Airbnb dataset only for SF city.**
+
+```{r}
+df_airbnb2 <- df_airbnb[df_airbnb$city == 'SF',]
+df_airbnb2 <- df_airbnb2[, c("log_price", "property_type", "room_type", "accommodates", "bathrooms", "bed_type", "cancellation_policy", "cleaning_fee", "host_has_profile_pic", "host_identity_verified", "host_response_rate", "instant_bookable", "neighbourhood", "number_of_reviews", "review_scores_rating", "zipcode", "bedrooms", "beds")]
+
+head(df_airbnb2)
+str(df_airbnb2)
+```
+
+Analysing the distribution of the variables
+
+```{r}
+library(tidyverse)
+custom_palette <- scales::hue_pal()(35)
+
+type <- ggplot(df_airbnb2, aes(x = property_type, fill = property_type)) +
+  geom_bar(color = "black") +
+  labs(x = "Property Type", y = "Frequency", title = "Distribution of Airbnb Listings By Property Type") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  scale_fill_manual(values = custom_palette)
+
+type + geom_text(stat = "count", aes(label = ifelse(..count.. != 0, ..count.., "")), vjust = -0.5, position = position_stack(vjust = 0.5))
+```
+
+```{r}
+r <- ggplot(df_airbnb2, aes(x = factor(room_type))) +
+  geom_bar(fill = "darkred", color = "black") +
+  labs(x = "Room Type", y = "Frequency", title = "Distribution of Airbnb Listings by Room Type") +
+  scale_x_discrete(labels = function(x) paste0(x))  
+
+
+r + geom_text(stat = "count", aes(label = ifelse(..count.. != 0, ..count.., "")), vjust = -0.5)
+```
+
+```{r}
+a <- ggplot(df_airbnb2, aes(x = factor(accommodates))) +
+  geom_bar(fill = "darkred", color = "black") +
+  labs(x = "Number of accommodates", y = "Frequency", title = "Distribution of Airbnb Listings by Number of accommodates") + scale_x_discrete(labels = function(x) paste0(x))
+
+a + geom_text(stat = "count", aes(label = ifelse(..count.. != 0, ..count.., "")), vjust = -0.5)
+```
+
+```{r}
+p <- ggplot(df_airbnb2, aes(x = factor(bathrooms))) +
+  geom_bar(fill = "darkred", color = "black") +
+  labs(x = "Number of Bathrooms", y = "Frequency", title = "Distribution of Airbnb Listings by Number of Bathrooms") +
+  scale_x_discrete(labels = function(x) paste0(x))+ theme(plot.title = element_text(size=9))
+
+
+
+p + geom_text(stat = "count", aes(label = ifelse(..count.. != 0, ..count.., "")), vjust = -0.5)
+```
+
+```{r}
+bedroom <- ggplot(df_airbnb2, aes(x = factor(bedrooms))) +
+  geom_bar(fill = "brown", color = "black") +
+  labs(x = "Number of Bedrooms", y = "Frequency", title = "Distribution of Airbnb Listings by Number of Bedrooms") +
+  scale_x_discrete(labels = function(x) paste0(x))  
+
+
+bedroom + geom_text(stat = "count", aes(label = ifelse(..count.. != 0, ..count.., "")), vjust = -0.5)
+```
+
+```{r}
+bed_type <- ggplot(df_airbnb2, aes(x = factor(bed_type))) +
+  geom_bar(fill = "darkred", color = "black") +
+  labs(x = "Number of bed_type", y = "Frequency", title = "Distribution of Airbnb Listings by Number of bed_type") +
+  scale_x_discrete(labels = function(x) paste0(x))  
+
+
+bed_type + geom_text(stat = "count", aes(label = ifelse(..count.. != 0, ..count.., "")), vjust = -0.5)
+```
+
+```{r}
+beds <- ggplot(df_airbnb2, aes(x = factor(beds))) +
+  geom_bar(fill = "darkred", color = "black") +
+  labs(x = "Number of beds", y = "Frequency", title = "Distribution of Airbnb Listings by Number of beds") +
+  scale_x_discrete(labels = function(x) paste0(x))
+
+
+beds + geom_text(stat = "count", aes(label = ifelse(..count.. != 0, ..count.., "")), vjust = -0.5)
+```
+
+```{r}
+fee <- ggplot(df_airbnb2, aes(x = cancellation_policy)) +
+  geom_bar(fill = "darkred", color = "black") +
+  labs(x = "Cancellation Policy", y = "Frequency", 
+       title = "Distribution of Airbnb Cancellation Fees")
+
+fee + geom_text(stat = "count", aes(label = ifelse(..count.. != 0, ..count.., "")), vjust = -0.5)
+
+```
+
+```{r}
+cleaning <- ggplot(df_airbnb2, aes(x = cleaning_fee)) +
+  geom_bar(fill = "darkred", color = "black") +
+  labs(x = "Cleaning Fee", y = "Frequency", 
+       title = "Distribution of Airbnb Cleaning Fees")
+
+cleaning + geom_text(stat = "count", aes(label = ifelse(..count.. != 0, ..count.., "")), vjust = -0.5)
+```
+
+```{r}
+verified <- ggplot(df_airbnb2, aes(x = host_identity_verified)) +
+  geom_bar(fill = "darkred", color = "black") +
+  labs(x = "Host Has Verified Identity", y = "Frequency", 
+       title = "Distribution of Airbnb Host Verified Identity")
+
+verified + geom_text(stat = "count", aes(label = ifelse(..count.. != 0, ..count.., "")), vjust = -0.5)
+```
+
+```{r}
+Profile <- ggplot(df_airbnb2, aes(x = host_has_profile_pic)) +
+  geom_bar(fill = "darkred", color = "black") +
+  labs(x = "Host Has Profile pic", y = "Frequency", 
+       title = "Distribution of Airbnb Host Profile Pic")
+
+Profile + geom_text(stat = "count", aes(label = ifelse(..count.. != 0, ..count.., "")), vjust = -0.5)
+```
+
+```{r}
+Response <- ggplot(df_airbnb2, aes(x = host_response_rate)) +
+  geom_bar(fill = "darkred", color = "black") +
+  labs(x = "Host Has Response Rate", y = "Frequency", 
+       title = "Distribution of Airbnb Host Response Rate") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+Response + geom_text(stat = "count", aes(label = ifelse(..count.. != 0, ..count.., "")), vjust = -0.5)
+```
+
+```{r}
+bookable <- ggplot(df_airbnb2, aes(x = instant_bookable)) +
+  geom_bar(fill = "darkred", color = "black") +
+  labs(x = "instant_bookable", y = "Frequency", 
+       title = "Distribution of Airbnb instant_bookable") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+bookable + geom_text(stat = "count", aes(label = ifelse(..count.. != 0, ..count.., "")), vjust = -0.5)
+```
+
+```{r}
+neighbourhood <- ggplot(df_airbnb2, aes(x = neighbourhood)) +
+  geom_bar(fill = "darkred", color = "black") +
+  labs(x = "neighbourhood", y = "Frequency", 
+       title = "Distribution of Airbnb neighbourhood") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+neighbourhood + geom_text(stat = "count", aes(label = ifelse(..count.. != 0, ..count.., "")), vjust = -0.5)
+```
+
+```{r}
+zipcode <- ggplot(df_airbnb2, aes(x = zipcode)) +
+  geom_bar(fill = "darkred", color = "black") +
+  labs(x = "zipcode", y = "Frequency", 
+       title = "Distribution of Airbnb zipcode") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+zipcode + geom_text(stat = "count", aes(label = ifelse(..count.. != 0, ..count.., "")), vjust = -0.5)
+```
+
+Notice 'zipcode' variable have duplicate levels with decimal places.
+Removing the duplicate values and regrouping.
+
+```{r}
+unique(df_airbnb2$zipcode)
+
+unique(substr(df_airbnb2$zipcode, 1, 5))
+```
+
+```{r}
+df_airbnb2$zipcode <- substr(df_airbnb2$zipcode, 1, 5)
+zipcode <- ggplot(df_airbnb2, aes(x = zipcode)) +
+  geom_bar(fill = "darkred", color = "black") +
+  labs(x = "zipcode", y = "Frequency", 
+       title = "Distribution of Airbnb zipcode") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+zipcode + geom_text(stat = "count", aes(label = ifelse(..count.. != 0, ..count.., "")), vjust = -0.5)
+```
+
+```{r}
+ggplot(df_airbnb2, aes(x = number_of_reviews)) +
+  geom_histogram(binwidth = 10, fill = "darkred", color = "black") +
+  labs(x = "Number of Reviews", y = "Frequency", title = "Distribution of Number of Reviews")
+
+```
+
+```{r}
+ggplot(df_airbnb2, aes(x = review_scores_rating)) +
+  geom_histogram(binwidth = 5, fill = "darkred", color = "black") +
+  labs(x = "Review Scores Rating", y = "Frequency", title = "Distribution of Review Scores Rating")
+```
+
+```{r}
+ggplot(df_airbnb2, aes(x = log_price)) +
+  geom_histogram( fill = "darkred", color = "black") +
+  labs(x = "log Price", y = "Frequency", title = "Distribution of log prices of airbnb's")
+
+ggplot(df_airbnb2, aes(x = exp(log_price))) +
+  geom_histogram( fill = "darkred", color = "black") +
+  labs(x = "Price", y = "Frequency", title = "Distribution of actual prices of airbnb's")
+```
+
+```{r}
+str(df_airbnb2)
+```
+
+```{r}
+#Removing null values
+df_airbnb3 <- na.omit(df_airbnb2)
+
+#Converting categorical variables into factors
+df_airbnb3$property_type <- as.factor(df_airbnb3$property_type)
+df_airbnb3$room_type <- as.factor(df_airbnb3$room_type)
+df_airbnb3$accommodates <- as.factor(df_airbnb3$accommodates)
+df_airbnb3$bathrooms <- as.factor(df_airbnb3$bathrooms)
+df_airbnb3$bed_type <- as.factor(df_airbnb3$bed_type)
+df_airbnb3$cancellation_policy <- as.factor(df_airbnb3$cancellation_policy)
+df_airbnb3$cleaning_fee <- factor(df_airbnb3$cleaning_fee)
+df_airbnb3$host_has_profile_pic <- as.factor(df_airbnb3$host_has_profile_pic)
+df_airbnb3$host_identity_verified <- as.factor(df_airbnb3$host_identity_verified)
+df_airbnb3$host_response_rate <- as.factor(df_airbnb3$host_response_rate)
+df_airbnb3$instant_bookable <- as.factor(df_airbnb3$instant_bookable)
+df_airbnb3$neighbourhood <- as.factor(df_airbnb3$neighbourhood)
+df_airbnb3$bedrooms <- as.factor(df_airbnb3$bedrooms)
+df_airbnb3$beds <- as.factor(df_airbnb3$beds)
+df_airbnb3$zipcode <- as.factor(df_airbnb3$zipcode)
+
+pairs(log_price ~ accommodates + bathrooms + cleaning_fee + number_of_reviews + review_scores_rating + bedrooms + beds, data = df_airbnb3)
+```
+
+```{r}
+
+```
+
+```{r}
+str(df_airbnb3)
+```
+
+```{r}
+# Fitting a multiple linear regression baseline model
+lm1 <- lm(log_price ~ ., data = df_airbnb3)
+summary(lm1)
+```
+
+The R-squared vale us 0.696. Let us check the model diagnostic plots.
+
+```{r}
+plot(lm1)
+hist(lm1$residuals)
+```
+
+```{r}
+shapiro.test(resid(lm1))
+```
+
+Since our sample size is large, let us perform Anderson-Darling
+normality test.
+
+```{r}
+library(nortest)
+ad.test(resid(lm1))
+```
+
+Doing box-cox transformation of the response variable
+
+```{r}
+library(MASS)
+library(car)
+
+boxcox(lm1)
+summary(p1 <- powerTransform(lm1))
+p1$roundlam #get the value of rounded power to transform later
+```
+
+```{r}
+# Applying power transformation to the response variable along with the step function to remove unimportant variables.
+lm2 <- lm(bcPower(log_price, p1$roundlam) ~ ., data = df_airbnb3)
+lm_step1 <- step(lm2, trace=0)
+summary(lm_step1)
+```
+
+```{r}
+plot(lm_step1)
+hist(lm_step1$residuals)
+```
+
+Building a model with exp(log_price) as the response variable.
+
+```{r}
+lm3 <- lm(exp(log_price) ~ ., data = df_airbnb3)
+summary(lm3)
+```
+
+```{r}
+boxcox(lm3)
+summary(p2 <- powerTransform(lm3))
+lm4 <- lm(bcPower(exp(log_price), p2$roundlam) ~ ., data = df_airbnb3)
+lm_step2 <- step(lm4, trace=0)
+summary(lm_step2)
+```
+
+```{r}
+summary(lm1)$adj.r.squared #baseline model
+summary(lm_step1)$adj.r.squared #baseline model with power transformation
+
+summary(lm3)$adj.r.squared #exponential model
+summary(lm_step2)$adj.r.squared #exponential model with power transformation
+```
+
+Upon performing the power Transformation, the adjusted R-squared value
+of lm_step2 model improved when compare. So far, lm1 model has the
+highest adjusted R-squared value of 0.683 however **lm_step1** model is
+parsimonious than lm1 with an adjusted R-squared value of 0.68. Since
+the difference among the values is minute, let us choose **lm_step1**
+model and perform model diagnostics.
+
+```{r}
+# Checking the frequency distribution of each variable
+my_func <- function(df, group){
+ df %>%
+   group_by_(group) %>%
+   summarise(my_count = n()) %>%
+   arrange(desc(my_count))
+}
+
+my_func(df_airbnb3, 'property_type')
+my_func(df_airbnb3, 'room_type')
+my_func(df_airbnb3, 'accommodates')
+my_func(df_airbnb3, 'bathrooms')
+my_func(df_airbnb3, 'bed_type')
+my_func(df_airbnb3, 'cancellation_policy')
+my_func(df_airbnb3, 'cleaning_fee')
+my_func(df_airbnb3, 'host_has_profile_pic')
+my_func(df_airbnb3, 'host_identity_verified')
+my_func(df_airbnb3, 'host_response_rate')
+my_func(df_airbnb3, 'instant_bookable')
+my_func(df_airbnb3, 'neighbourhood')
+my_func(df_airbnb3, 'number_of_reviews')
+my_func(df_airbnb3, 'review_scores_rating')
+my_func(df_airbnb3, 'zipcode')
+my_func(df_airbnb3, 'bedrooms')
+my_func(df_airbnb3, 'beds')
+```
+
+```{r}
+summary(lm_step1)
+```
+
+```{r}
+#Regrouping the variables based on the significance levels in the model summary. Checking if regrouping improves the model performance.
+
+library(tidyverse)
+
+df_airbnb4 <- df_airbnb3
+df_airbnb4 <- mutate(df_airbnb4, bathrooms2 = case_when(
+  bathrooms == "5" | bathrooms == "8"  ~ '5', TRUE ~ bathrooms))
+
+df_airbnb4 <- mutate(df_airbnb4, property_type2 = case_when(
+  property_type == "Boat" | property_type == "Castle" | 
+  property_type == "Cave" | property_type == "Condominium" | 
+  property_type == "Dorm" | property_type == "House" | 
+  property_type == "Serviced apartment" ~ property_type, TRUE ~ 'Other'))
+```
+
+```{r}
+str(df_airbnb4)
+```
+
+```{r}
+df_airbnb4$bathrooms2 <- as.factor(df_airbnb4$bathrooms2)
+df_airbnb4$property_type2 <- as.factor(df_airbnb4$property_type2)
+df_airbnb4$accommodates2 <- as.factor(df_airbnb4$accommodates)
+
+lm5 <- lm(log_price ~ property_type2 + room_type + accommodates2 +
+            bathrooms2  + bed_type + cancellation_policy +
+            host_identity_verified  + host_response_rate +
+            neighbourhood  +  number_of_reviews + review_scores_rating + 
+            zipcode + bedrooms + beds, data = df_airbnb4)
+summary(lm5)
+```
+
+```{r}
+boxcox(lm5)
+summary(p3<- powerTransform(lm5))
+lm6 <- lm(bcPower(log_price, p3$roundlam) ~ property_type2 + room_type + accommodates2 +
+            bathrooms2  + bed_type + cancellation_policy +
+            host_identity_verified  + host_response_rate +
+            neighbourhood  +  number_of_reviews + review_scores_rating + 
+            zipcode + bedrooms + beds, data = df_airbnb4)
+summary(lm6)
+```
+
+lm5 model has the highest adjusted R squared value of 0.6845
+
+```{r}
+# checking for multicollinearity
+vif(lm5)
+```
+
+```{r}
+plot(lm5)
+```
+
+```{r}
+set.seed(999) # set seed for reproducibility
+n <- nrow(df_airbnb4)
+n
+floor(0.7*n)
+```
+
+```{r}
+# randomly sample 70% of rows for training set
+train <- sample(1:n, 3520)
+# fit model using training data
+lm_train <- lm(log_price ~ property_type2 + room_type + accommodates2 + 
+    bathrooms2 + bed_type + cancellation_policy + host_identity_verified + 
+    host_response_rate + neighbourhood + number_of_reviews + 
+    review_scores_rating + zipcode + bedrooms + beds, data=df_airbnb4,
+subset = train)
+
+summary(lm_train)
+```
+
+```{r}
+test <- df_airbnb4[-train, ]
+preds_test <- predict(lm_train, newdata = test)
+tb <- table(prediction = preds_test,
+actual <- df_airbnb4$log_price)
+addmargins(tb)
+```
+
+Since property_type2 of Serviced apartment is not present in the test
+data set, we are getting the above error. To avoid this issue, we have
+to ensure both training and testing data sets have similar distribution.
+
+We can skip model building for now as it is out of scope for STAT632
+project.
