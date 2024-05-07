@@ -1,3 +1,4 @@
+#Description of Problem 
 This multiple linear regression analysis delves into the rich dataset of Airbnb accommodations, 
 encompassing a diverse array of properties worldwide. By examining a multitude of factors including
 property features, pricing dynamics, guest reviews, and host characteristics, the study aims to uncover 
